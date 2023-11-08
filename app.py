@@ -1,9 +1,8 @@
 import telebot
-from bot_token import BotToken
+from config import BotToken, keys
+from extensions import *
 
 bot = telebot.TeleBot(BotToken)
-
-keys = {'доллар': 'USD'}
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -24,7 +23,15 @@ def values(message: telebot.types.Message):
 
 @bot.message_handler(content_types=['text'])
 def convert(message: telebot.types.Message):
-    quote, base, amount = message.text.split()
+
+    arq = message.text.split()
+    if len(arq) != 3:
+        raise ConvertException('Неверное количество параметров!')
+
+    quote, base, amount = arq
+    total_base = ValuesConverter.get_prise(quote, base, amount)
+    text = f'Цена {amount} {quote} в {base} - {total_base}'
+    bot.send_message(message.chat.id, text)
 
 
 bot.polling()
