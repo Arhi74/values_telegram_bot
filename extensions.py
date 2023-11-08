@@ -3,7 +3,7 @@ import json
 from config import keys
 
 
-class ConvertException(Exception):
+class APIException(Exception):
     pass
 
 
@@ -12,13 +12,19 @@ class ValuesConverter:
     @staticmethod
     def get_prise(quote, base, amount):
 
+        if not keys.get(quote):
+            raise APIException(f'Не найдена валюта {quote}!\nСписок доступных валют можно вывести командой /values')
+
+        if not keys.get(base):
+            raise APIException(f'Не найдена валюта {base}!\nСписок доступных валют можно вывести командой /values')
+
         if quote == base:
-            raise ConvertException('Валюты должны быть разные!')
+            raise APIException('Валюты должны быть разные!')
 
         try:
-            float(amount)
+            amount = float(amount)
         except ValueError:
-            raise ConvertException('Неправильно задано количество валюты')
+            raise APIException('Неправильно задано количество валюты')
 
         value_str = f'{keys.get(quote)}_{keys.get(base)}'
         api_key = '7402931417476eafe41b'
