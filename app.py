@@ -21,6 +21,13 @@ def values(message: telebot.types.Message):
     bot.reply_to(message, text)
 
 
+@bot.message_handler(content_types=['audio', 'photo', 'voice', 'video', 'document', 'location', 'contact', 'sticker'])
+def rejection(message: telebot.types.Message):
+
+    text = 'Данный бот работает только с текстом!'
+    bot.send_message(message.chat.id, text)
+
+
 @bot.message_handler(content_types=['text'])
 def convert(message: telebot.types.Message):
 
